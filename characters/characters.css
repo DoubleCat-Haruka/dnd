@@ -374,8 +374,23 @@ header {
 
 .character-columns {
   display: flex;
-  gap: 40px; /* расстояние между колонками */
+  gap: 20px; /* расстояние между колонками */
   align-items: flex-start; /* выравниваем все колонки по верху */
+}
+.left-columns {
+  display: flex;
+  flex-direction: column; /* стекируем stats, skills и inventory вертикально */
+  gap: 10px;
+}
+
+.top-left {
+  display: flex;
+  gap: 10px; /* расстояние между stats и skills */
+}
+
+.right-columns {
+  display: flex;
+  gap: 10px;
 }
 .character-stats, .skills-column {
   flex: 1;                  /* колонки равной ширины, тянутся */

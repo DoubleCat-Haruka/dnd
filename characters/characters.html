@@ -8,578 +8,660 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
-  <header>
-   <div class="header-row">
-   
-		<!-- Дайс бокс -->
-		<div class="overlay">
-			<div class="left-column">	
-				<div class="dice-buttons">
-					<button onclick="rollDice(4)">d4</button>
-					<button onclick="rollDice(6)">d6</button>
-					<button onclick="rollDice(8)">d8</button>
-					<button onclick="rollDice(10)">d10</button>
-					<button onclick="rollDice(12)">d12</button>
-					<button onclick="rollDice(20)">d20</button>
+	<header>
+		<div class="header-row">
+			<div class="overlay"><!-- Дайс бокс -->
+				<div class="left-column">	
+					<div class="dice-buttons">
+						<button onclick="rollDice(4)">d4</button>
+						<button onclick="rollDice(6)">d6</button>
+						<button onclick="rollDice(8)">d8</button>
+						<button onclick="rollDice(10)">d10</button>
+						<button onclick="rollDice(12)">d12</button>
+						<button onclick="rollDice(20)">d20</button>
+					</div>
+				
+					<div class="modifiers">
+						<input type="text" id="modifier" placeholder="модификатор" />
+					</div>
 				</div>
+
+				<div class="formula-column">
+					<input type="text" id="formula" placeholder="формула" />
+					<button onclick="rollFormula()">бросить кубы</button>
+				</div>
+
+				<div class="right-column">
+					<div class="result">
+						
+						<span id="dice-result"></span>
+					</div>
+				</div>
+			</div>
+	   
+			<nav class="main-nav">
+				<a href="../index.html" class="nav-link">Главная</a>
+				<a href="characters.html" class="nav-link active">Персонажи</a>
+				<a href="../map1/map1.html" class="nav-link">Карта мира</a>
+				<a href="../map2/map2.html" class="nav-link">Карта локации</a>
+			</nav>
 			
-				<div class="modifiers">
-					<input type="text" id="modifier" placeholder="модификатор" />
-				</div>
-			</div>
-
-			<div class="formula-column">
-				<input type="text" id="formula" placeholder="формула" />
-				<button onclick="rollFormula()">бросить кубы</button>
-			</div>
-
-			<div class="right-column">
-				<div class="result">
-					
-					<span id="dice-result"></span>
-				</div>
-			</div>
+			<div class="formula-history-overlay"><!-- блок для истории формул -->
+				<p>Последние формулы</p>
+				<ul id="formula-history-list">
+				<!-- сюда будут подставляться последние 8 формул -->
+				</ul>
+			</div>	
 		</div>
-   
-		<nav class="main-nav">
-			<a href="../index.html" class="nav-link">Главная</a>
-			<a href="characters.html" class="nav-link active">Персонажи</a>
-			<a href="../map1/map1.html" class="nav-link">Карта мира</a>
-			<a href="../map2/map2.html" class="nav-link">Карта локации</a>
-		</nav>
-		
-		<!-- блок для истории формул -->
-		<div class="formula-history-overlay">
-			<p>Последние формулы</p>
-			<ul id="formula-history-list">
-			<!-- сюда будут подставляться последние 8 формул -->
-			</ul>
-		</div>	
-	</div>
-</header>
+	</header>
 
-  <!-- Радиокнопки для выбора персонажа -->
-  <div class="button-container">
+<!-- Радиокнопки для выбора персонажа -->
+<div class="button-container">
     <input type="radio" id="lexa" name="character" class="input-btn" />
     <label class="btn" for="lexa">Лекса</label>
-    
     <input type="radio" id="axel" name="character" class="input-btn" />  
     <label class="btn" for="axel">Аксель</label>
-  </div>
+</div>
 
-  <!-- Блоки с характеристиками (по умолчанию скрыты) -->
-  
-   <!-- **************************************Лекса************************************** -->
+	<!-- **************************************Лекса************************************** -->
 <div class="character-info" id="lexa-info" style="display: none;">
-  <div class="character-avatar">
-    <img src="../images/avatar1.png" alt="Лекса" />
-	<br>
-	<h2 align="left"><span id="lexa-name">-</span></h2>
-	<p align="left"><span id="lexa-race">-</span></p>
-	<p align="left"><span id="lexa-class">-</span></p>
-  </div>
-  <div class="character-columns">
-  <div class="character-stats">
-  <ul>
-    <div class="stat-row">
-      <span class="stat-name">Вдохновение:</span>
-      <span class="stat-value" id="lexa-inspiration">-</span>
-	  <button class="adjust-btn" data-target="lexa-inspiration" data-action="minus">-</button>
-	  <button class="adjust-btn" data-target="lexa-inspiration" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Класс брони:</span>
-      <span class="stat-value" id="lexa-ac">-</span>
-	  <button class="adjust-btn" data-target="lexa-ac" data-action="minus">-</button>
-	  <button class="adjust-btn" data-target="lexa-ac" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Инициатива:</span>
-      <span class="stat-value" id="lexa-initiative">-</span>
-	  <button class="adjust-btn" data-target="lexa-initiative" data-action="minus">-</button>
-	  <button class="adjust-btn" data-target="lexa-initiative" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Скорость:</span>
-      <span class="stat-value" id="lexa-speed">-</span>
-	  <button class="adjust-btn" data-target="lexa-speed" data-action="minus">-</button>
-	  <button class="adjust-btn" data-target="lexa-speed" data-action="plus">+</button>
-    </div>
-	<br>
-	<div class="stat-row">
-      <span class="stat-name">Уровень:</span>
-      <span class="stat-value" id="lexa-lvl">-</span>
-	  <button class="adjust-btn" data-target="lexa-lvl" data-action="minus">-</button>
-	  <button class="adjust-btn" data-target="lexa-lvl" data-action="plus">+</button>
-    </div>
-	<br>
-    <div class="stat-row">
-      <span class="stat-name">Макс хиты:</span>
-      <span class="stat-value" id="lexa-max-hp">-</span>
-	  <button class="adjust-btn" data-target="lexa-max-hp" data-action="minus">-</button>
-	  <button class="adjust-btn" data-target="lexa-max-hp" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Хиты:</span>
-      <span class="stat-value" id="lexa-hp">-</span>
-	  <button class="adjust-btn" data-target="lexa-hp" data-action="minus">-</button>
-	  <button class="adjust-btn" data-target="lexa-hp" data-action="plus">+</button>
-    </div>
-	<br>
-    <div class="stat-row">
-      <span class="stat-name">Сила:</span>
-      <span class="stat-value" id="lexa-str">-</span>
-	  <span id="lexa-str-save">0</span> <!-- спасбросок -->
-	  <button class="adjust-btn" data-target="lexa-str" data-action="minus">-</button>
-	  <button class="adjust-btn" data-target="lexa-str" data-action="plus">+</button>
+	<div class="character-avatar">
+		<img src="../images/avatar1.png" alt="Лекса" />
+		<br>
+		<h2 align="left"><span id="lexa-name">-</span></h2>
+		<p align="left"><span id="lexa-race">-</span></p>
+		<p align="left"><span id="lexa-class">-</span></p>
+	</div>
+	
+	<div class="character-columns">
+		<div class="left-columns"> <!-- Левая группа -->
+			<div class="top-left">
+				<div class="character-stats">
+					<ul>
+						<div class="stat-row">
+							<span class="stat-name">Вдохновение:</span>
+							<span class="stat-value" id="lexa-inspiration">-</span>
+							<button class="adjust-btn" data-target="lexa-inspiration" data-action="minus">-</button>
+							<button class="adjust-btn" data-target="lexa-inspiration" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Класс брони:</span>
+							<span class="stat-value" id="lexa-ac">-</span>
+							<button class="adjust-btn" data-target="lexa-ac" data-action="minus">-</button>
+							<button class="adjust-btn" data-target="lexa-ac" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Инициатива:</span>
+							<span class="stat-value" id="lexa-initiative">-</span>
+							<button class="adjust-btn" data-target="lexa-initiative" data-action="minus">-</button>
+							<button class="adjust-btn" data-target="lexa-initiative" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Скорость:</span>
+							<span class="stat-value" id="lexa-speed">-</span>
+							<button class="adjust-btn" data-target="lexa-speed" data-action="minus">-</button>
+							<button class="adjust-btn" data-target="lexa-speed" data-action="plus">+</button>
+						</div>
+					
+						<br>
+					
+						<div class="stat-row">
+							<span class="stat-name">Уровень:</span>
+							<span class="stat-value" id="lexa-lvl">-</span>
+							<button class="adjust-btn" data-target="lexa-lvl" data-action="minus">-</button>
+							<button class="adjust-btn" data-target="lexa-lvl" data-action="plus">+</button>
+						</div>
+					
+						<br>
+					
+						<div class="stat-row">
+							<span class="stat-name">Макс хиты:</span>
+							<span class="stat-value" id="lexa-max-hp">-</span>
+							<button class="adjust-btn" data-target="lexa-max-hp" data-action="minus">-</button>
+							<button class="adjust-btn" data-target="lexa-max-hp" data-action="plus">+</button>
+						</div>
+		
+						<div class="stat-row">
+							<span class="stat-name">Хиты:</span>
+							<span class="stat-value" id="lexa-hp">-</span>
+							<button class="adjust-btn" data-target="lexa-hp" data-action="minus">-</button>
+							<button class="adjust-btn" data-target="lexa-hp" data-action="plus">+</button>
+						</div>
+		
+						<br>
+		
+						<div class="stat-row">
+							<span class="stat-name">Сила:</span>
+							<span class="stat-value" id="lexa-str">-</span>
+							<span id="lexa-str-save">0</span> <!-- спасбросок -->
+							<button class="adjust-btn" data-target="lexa-str" data-action="minus">-</button>
+							<button class="adjust-btn" data-target="lexa-str" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Ловкость:</span>
+							<span class="stat-value" id="lexa-dex">-</span>
+							<span id="lexa-dex-save">0</span> <!-- спасбросок -->
+							<button class="adjust-btn" data-target="lexa-dex" data-action="minus">-</button>
+							<button class="adjust-btn" data-target="lexa-dex" data-action="plus">+</button>
+						</div>
+	   
+						<div class="stat-row">
+							<span class="stat-name">Телосложение:</span>
+							<span class="stat-value" id="lexa-con">-</span>
+							<span id="lexa-con-save">0</span> <!-- спасбросок -->
+							<button class="adjust-btn" data-target="lexa-con" data-action="minus">-</button>
+							<button class="adjust-btn" data-target="lexa-con" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+								<span class="stat-name">Интеллект:</span>
+								<span class="stat-value" id="lexa-int">-</span>
+								<span id="lexa-int-save">0</span> <!-- спасбросок -->
+								<button class="adjust-btn" data-target="lexa-int" data-action="minus">-</button>
+								<button class="adjust-btn" data-target="lexa-int" data-action="plus">+</button>
+						</div>
+		
+						<div class="stat-row">
+							<span class="stat-name">Мудрость:</span>
+							<span class="stat-value" id="lexa-wis">-</span>
+							<span id="lexa-wis-save">0</span> <!-- спасбросок -->
+							<button class="adjust-btn" data-target="lexa-wis" data-action="minus">-</button>
+							<button class="adjust-btn" data-target="lexa-wis" data-action="plus">+</button>
+						</div>
+	   
+						<div class="stat-row">
+							<span class="stat-name">Харизма:</span>
+							<span class="stat-value" id="lexa-cha">-</span>
+							<span id="lexa-cha-save">0</span> <!-- спасбросок -->
+							<button class="adjust-btn" data-target="lexa-cha" data-action="minus">-</button>
+							<button class="adjust-btn" data-target="lexa-cha" data-action="plus">+</button>
+						</div>
+					</ul>
+				</div>
+	  
+				<div class="skills-column">
+					<ul>
+						<div class="stat-row">
+							<span class="stat-name">Акробатика:</span>
+							<span class="stat-value" id="lexa-акробатика">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="lexa-акробатика" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="lexa-акробатика" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Анализ:</span>
+							<span class="stat-value" id="lexa-анализ">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="lexa-анализ" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="lexa-анализ" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Атлетика:</span>
+							<span class="stat-value" id="lexa-атлетика">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="lexa-атлетика" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="lexa-атлетика" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Восприятие:</span>
+							<span class="stat-value" id="lexa-восприятие">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="lexa-восприятие" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="lexa-восприятие" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Выживание:</span>
+							<span class="stat-value" id="lexa-выживание">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="lexa-выживание" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="lexa-выживание" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Выступление:</span>
+							<span class="stat-value" id="lexa-выступление">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="lexa-выступление" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="lexa-выступление" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Запугивание:</span>
+							<span class="stat-value" id="lexa-запугивание">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="lexa-запугивание" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="lexa-запугивание" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">История:</span>
+							<span class="stat-value" id="lexa-история">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="lexa-история" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="lexa-история" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Ловкость рук:</span>
+							<span class="stat-value" id="lexa-ловкость-рук">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="lexa-ловкость-рук" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="lexa-ловкость-рук" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Магия:</span>
+							<span class="stat-value" id="lexa-магия">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="lexa-магия" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="lexa-магия" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Медицина:</span>
+							<span class="stat-value" id="lexa-медицина">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="lexa-медицина" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="lexa-медицина" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Обман:</span>
+							<span class="stat-value" id="lexa-обман">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="lexa-обман" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="lexa-обман" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Природа:</span>
+							<span class="stat-value" id="lexa-природа">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="lexa-природа" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="lexa-природа" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Проницательность:</span>
+							<span class="stat-value" id="lexa-проницательность">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="lexa-проницательность" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="lexa-проницательность" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Религия:</span>
+							<span class="stat-value" id="lexa-религия">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="lexa-религия" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="lexa-религия" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Скрытность:</span>
+							<span class="stat-value" id="lexa-скрытность">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="lexa-скрытность" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="lexa-скрытность" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Убеждение:</span>
+							<span class="stat-value" id="lexa-убеждение">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="lexa-убеждение" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="lexa-убеждение" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Уход за животными:</span>
+							<span class="stat-value" id="lexa-уход-за-животными">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="lexa-уход-за-животными" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="lexa-уход-за-животными" data-action="plus">+</button>
+						</div>
+					</ul>
+				</div>
+			</div>
+			
+			<div class="inventory-section">
+			  <h3>Инвентарь</h3>
+			  <textarea id="lexa-inventory" placeholder="Введите предметы, ресурсы и снаряжение"></textarea>
+			  <button class="save-inventory-btn" data-character="lexa">💾 Сохранить инвентарь</button>
+			</div>
+		</div>
+	
+		<div class="right-columns"> <!-- Правая группа -->
+			<div class="traits-column">
+				<h4>Черты характера</h4>
+				<input type="text" id="lexa-traits" placeholder="Черты характера" />
+				<br>
+				<h4>Умения</h4>
+				<div class="abilities">
+					<input type="text" id="lexa-ability1" placeholder="Название умения 1" class="short" />
+					<textarea  type="text" id="lexa-ability2" placeholder="Описание умения 1" class="long" ></textarea>
+					<input type="text" id="lexa-ability3" placeholder="Название умения 2" class="short" />
+					<textarea type="text" id="lexa-ability4" placeholder="Описание умения 2" class="long" ></textarea>
+					<input type="text" id="lexa-ability5" placeholder="Название умения 3" class="short" />
+					<textarea type="text" id="lexa-ability6" placeholder="Описание умения 3" class="long" ></textarea>
+					<input type="text" id="lexa-ability7" placeholder="Название умения 4" class="short" />
+					<textarea type="text" id="lexa-ability8" placeholder="Описание умения 4" class="long" ></textarea>
+					<input type="text" id="lexa-ability9" placeholder="Название умения 5" class="short" />
+					<textarea type="text" id="lexa-ability10" placeholder="Описание умения 5" class="long" ></textarea>
+				</div>
+			</div>
+		
+			<div class="stats-column">
+				<h4>Характеристики</h4>
+				<br>
+				<p>Идеалы</p>
+				<textarea type="text" id="lexa-ideals" placeholder="Идеалы" ></textarea>
+				<br>
+				<p>Привязанности</p>
+				<textarea type="text" id="lexa-bonds" placeholder="Привязанности" ></textarea>
+				<br>
+				<p>Слабости</p>
+				<textarea type="text" id="lexa-flaws" placeholder="Слабости" ></textarea>
+				<br>
+				<p>Владение языками</p>
+				<textarea type="text" id="lexa-languages" placeholder="Владение языками" ></textarea>
+				<br>
+				<button class="save-traits-btn" data-character="lexa">Сохранить изменения</button>
+			</div>
+		</div>
+	</div>
 
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Ловкость:</span>
-      <span class="stat-value" id="lexa-dex">-</span>
-	  <span id="lexa-dex-save">0</span> <!-- спасбросок -->
-	  <button class="adjust-btn" data-target="lexa-dex" data-action="minus">-</button>
-	  <button class="adjust-btn" data-target="lexa-dex" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Телосложение:</span>
-      <span class="stat-value" id="lexa-con">-</span>
-	  <span id="lexa-con-save">0</span> <!-- спасбросок -->
-	  <button class="adjust-btn" data-target="lexa-con" data-action="minus">-</button>
-	  <button class="adjust-btn" data-target="lexa-con" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Интеллект:</span>
-      <span class="stat-value" id="lexa-int">-</span>
-	  <span id="lexa-int-save">0</span> <!-- спасбросок -->
-	  <button class="adjust-btn" data-target="lexa-int" data-action="minus">-</button>
-	  <button class="adjust-btn" data-target="lexa-int" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Мудрость:</span>
-      <span class="stat-value" id="lexa-wis">-</span>
-	  <span id="lexa-wis-save">0</span> <!-- спасбросок -->
-	  <button class="adjust-btn" data-target="lexa-wis" data-action="minus">-</button>
-	  <button class="adjust-btn" data-target="lexa-wis" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Харизма:</span>
-      <span class="stat-value" id="lexa-cha">-</span>
-	  <span id="lexa-cha-save">0</span> <!-- спасбросок -->
-	  <button class="adjust-btn" data-target="lexa-cha" data-action="minus">-</button>
-	  <button class="adjust-btn" data-target="lexa-cha" data-action="plus">+</button>
-    </div>
-	</ul>
-  </div>
-  
-<div class="skills-column">
-  <ul>
-    <div class="stat-row">
-      <span class="stat-name">Акробатика:</span>
-      <span class="stat-value" id="lexa-акробатика">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="lexa-акробатика" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="lexa-акробатика" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Анализ:</span>
-      <span class="stat-value" id="lexa-анализ">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="lexa-анализ" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="lexa-анализ" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Атлетика:</span>
-      <span class="stat-value" id="lexa-атлетика">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="lexa-атлетика" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="lexa-атлетика" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Восприятие:</span>
-      <span class="stat-value" id="lexa-восприятие">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="lexa-восприятие" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="lexa-восприятие" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Выживание:</span>
-      <span class="stat-value" id="lexa-выживание">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="lexa-выживание" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="lexa-выживание" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Выступление:</span>
-      <span class="stat-value" id="lexa-выступление">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="lexa-выступление" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="lexa-выступление" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Запугивание:</span>
-      <span class="stat-value" id="lexa-запугивание">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="lexa-запугивание" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="lexa-запугивание" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">История:</span>
-      <span class="stat-value" id="lexa-история">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="lexa-история" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="lexa-история" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Ловкость рук:</span>
-      <span class="stat-value" id="lexa-ловкость-рук">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="lexa-ловкость-рук" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="lexa-ловкость-рук" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Магия:</span>
-      <span class="stat-value" id="lexa-магия">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="lexa-магия" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="lexa-магия" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Медицина:</span>
-      <span class="stat-value" id="lexa-медицина">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="lexa-медицина" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="lexa-медицина" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Обман:</span>
-      <span class="stat-value" id="lexa-обман">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="lexa-обман" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="lexa-обман" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Природа:</span>
-      <span class="stat-value" id="lexa-природа">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="lexa-природа" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="lexa-природа" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Проницательность:</span>
-      <span class="stat-value" id="lexa-проницательность">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="lexa-проницательность" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="lexa-проницательность" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Религия:</span>
-      <span class="stat-value" id="lexa-религия">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="lexa-религия" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="lexa-религия" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Скрытность:</span>
-      <span class="stat-value" id="lexa-скрытность">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="lexa-скрытность" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="lexa-скрытность" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Убеждение:</span>
-      <span class="stat-value" id="lexa-убеждение">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="lexa-убеждение" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="lexa-убеждение" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Уход за животными:</span>
-      <span class="stat-value" id="lexa-уход-за-животными">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="lexa-уход-за-животными" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="lexa-уход-за-животными" data-action="plus">+</button>
-    </div>
-  </ul>
 </div>
 
 
 
-<div class="traits-column">
-  <h4>Черты характера</h4>
-  <input type="text" id="lexa-traits" placeholder="Черты характера" />
-  <br>
-  <h4>Умения</h4>
-  <div class="abilities">
-    <input type="text" id="lexa-ability1" placeholder="Название умения 1" class="short" />
-    <textarea  type="text" id="lexa-ability2" placeholder="Описание умения 1" class="long" /></textarea>
-    <input type="text" id="lexa-ability3" placeholder="Название умения 2" class="short" />
-    <textarea type="text" id="lexa-ability4" placeholder="Описание умения 2" class="long" /></textarea>
-    <input type="text" id="lexa-ability5" placeholder="Название умения 3" class="short" />
-    <textarea type="text" id="lexa-ability6" placeholder="Описание умения 3" class="long" /></textarea>
-    <input type="text" id="lexa-ability7" placeholder="Название умения 4" class="short" />
-    <textarea type="text" id="lexa-ability8" placeholder="Описание умения 4" class="long" /></textarea>
-    <input type="text" id="lexa-ability9" placeholder="Название умения 5" class="short" />
-    <textarea type="text" id="lexa-ability10" placeholder="Описание умения 5" class="long" /></textarea>
-  </div>
-</div>
- <div class="stats-column">
-  <h4>Характеристики</h4>
-  <br>
-  <p>Идеалы</p>
-  <textarea type="text" id="lexa-ideals" placeholder="Идеалы" /></textarea>
-  <br>
-  <p>Привязанности</p>
-  <textarea type="text" id="lexa-bonds" placeholder="Привязанности" /></textarea>
-  <br>
-  <p>Слабости</p>
-  <textarea type="text" id="lexa-flaws" placeholder="Слабости" /></textarea>
-  <br>
-  <p>Владение языками</p>
-  <textarea type="text" id="lexa-languages" placeholder="Владение языками" /></textarea>
-	<br>
-  <button class="save-traits-btn" data-character="lexa">Сохранить изменения</button>
-</div>
-
-</div>
-  
-</div>
-
-
-
-<!-- ************************Аксель********************************* -->
+	<!-- ************************Аксель********************************* -->
 <div class="character-info" id="axel-info" style="display: none;">
-  <div class="character-avatar">
-    <img src="../images/avatar2.png" alt="Аксель" />
-	<br>
-	<h2 align="left"><span id="axel-name">-</span></h2>
-	<p align="left"><span id="axel-race">-</span></p>
-	<p align="left"><span id="axel-class">-</span></p>
-  </div>
-  <div class="character-columns">
-  <div class="character-stats">
-  <ul>
-    <div class="stat-row">
-      <span class="stat-name">Вдохновение:</span>
-      <span class="stat-value" id="axel-inspiration">-</span>
-	  <button class="adjust-btn" data-target="axel-inspiration" data-action="minus">-</button>
-	  <button class="adjust-btn" data-target="axel-inspiration" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Класс брони:</span>
-      <span class="stat-value" id="axel-ac">-</span>
-	  <button class="adjust-btn" data-target="axel-ac" data-action="minus">-</button>
-	  <button class="adjust-btn" data-target="axel-ac" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Инициатива:</span>
-      <span class="stat-value" id="axel-initiative">-</span>
-	  <button class="adjust-btn" data-target="axel-initiative" data-action="minus">-</button>
-	  <button class="adjust-btn" data-target="axel-initiative" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Скорость:</span>
-      <span class="stat-value" id="axel-speed">-</span>
-	  <button class="adjust-btn" data-target="axel-speed" data-action="minus">-</button>
-	  <button class="adjust-btn" data-target="axel-speed" data-action="plus">+</button>
-    </div>
-	<br>
-	<div class="stat-row">
-      <span class="stat-name">Уровень:</span>
-      <span class="stat-value" id="axel-lvl">-</span>
-	  <button class="adjust-btn" data-target="axel-lvl" data-action="minus">-</button>
-	  <button class="adjust-btn" data-target="axel-lvl" data-action="plus">+</button>
-    </div>
-	<br>
-    <div class="stat-row">
-      <span class="stat-name">Макс хиты:</span>
-      <span class="stat-value" id="axel-max-hp">-</span>
-	  <button class="adjust-btn" data-target="axel-max-hp" data-action="minus">-</button>
-	  <button class="adjust-btn" data-target="axel-max-hp" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Хиты:</span>
-      <span class="stat-value" id="axel-hp">-</span>
-	  <button class="adjust-btn" data-target="axel-hp" data-action="minus">-</button>
-	  <button class="adjust-btn" data-target="axel-hp" data-action="plus">+</button>
-    </div>
-	<br>
-    <div class="stat-row">
-      <span class="stat-name">Сила:</span>
-      <span class="stat-value" id="axel-str">-</span>
-	  <span id="axel-str-save">0</span> <!-- спасбросок -->
-	  <button class="adjust-btn" data-target="axel-str" data-action="minus">-</button>
-	  <button class="adjust-btn" data-target="axel-str" data-action="plus">+</button>
-
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Ловкость:</span>
-      <span class="stat-value" id="axel-dex">-</span>
-	  <span id="axel-dex-save">0</span> <!-- спасбросок -->
-	  <button class="adjust-btn" data-target="axel-dex" data-action="minus">-</button>
-	  <button class="adjust-btn" data-target="axel-dex" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Телосложение:</span>
-      <span class="stat-value" id="axel-con">-</span>
-	  <span id="axel-con-save">0</span> <!-- спасбросок -->
-	  <button class="adjust-btn" data-target="axel-con" data-action="minus">-</button>
-	  <button class="adjust-btn" data-target="axel-con" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Интеллект:</span>
-      <span class="stat-value" id="axel-int">-</span>
-	  <span id="axel-int-save">0</span> <!-- спасбросок -->
-	  <button class="adjust-btn" data-target="axel-int" data-action="minus">-</button>
-	  <button class="adjust-btn" data-target="axel-int" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Мудрость:</span>
-      <span class="stat-value" id="axel-wis">-</span>
-	  <span id="axel-wis-save">0</span> <!-- спасбросок -->
-	  <button class="adjust-btn" data-target="axel-wis" data-action="minus">-</button>
-	  <button class="adjust-btn" data-target="axel-wis" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Харизма:</span>
-      <span class="stat-value" id="axel-cha">-</span>
-	  <span id="axel-cha-save">0</span> <!-- спасбросок -->
-	  <button class="adjust-btn" data-target="axel-cha" data-action="minus">-</button>
-	  <button class="adjust-btn" data-target="axel-cha" data-action="plus">+</button>
-    </div>
-	</ul>
-  </div>
-  
-<div class="skills-column">
-  <ul>
-    <div class="stat-row">
-      <span class="stat-name">Акробатика:</span>
-      <span class="stat-value" id="axel-акробатика">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="axel-акробатика" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="axel-акробатика" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Анализ:</span>
-      <span class="stat-value" id="axel-анализ">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="axel-анализ" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="axel-анализ" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Атлетика:</span>
-      <span class="stat-value" id="axel-атлетика">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="axel-атлетика" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="axel-атлетика" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Восприятие:</span>
-      <span class="stat-value" id="axel-восприятие">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="axel-восприятие" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="axel-восприятие" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Выживание:</span>
-      <span class="stat-value" id="axel-выживание">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="axel-выживание" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="axel-выживание" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Выступление:</span>
-      <span class="stat-value" id="axel-выступление">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="axel-выступление" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="axel-выступление" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Запугивание:</span>
-      <span class="stat-value" id="axel-запугивание">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="axel-запугивание" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="axel-запугивание" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">История:</span>
-      <span class="stat-value" id="axel-история">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="axel-история" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="axel-история" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Ловкость рук:</span>
-      <span class="stat-value" id="axel-ловкость-рук">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="axel-ловкость-рук" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="axel-ловкость-рук" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Магия:</span>
-      <span class="stat-value" id="axel-магия">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="axel-магия" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="axel-магия" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Медицина:</span>
-      <span class="stat-value" id="axel-медицина">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="axel-медицина" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="axel-медицина" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Обман:</span>
-      <span class="stat-value" id="axel-обман">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="axel-обман" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="axel-обман" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Природа:</span>
-      <span class="stat-value" id="axel-природа">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="axel-природа" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="axel-природа" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Проницательность:</span>
-      <span class="stat-value" id="axel-проницательность">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="axel-проницательность" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="axel-проницательность" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Религия:</span>
-      <span class="stat-value" id="axel-религия">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="axel-религия" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="axel-религия" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Скрытность:</span>
-      <span class="stat-value" id="axel-скрытность">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="axel-скрытность" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="axel-скрытность" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Убеждение:</span>
-      <span class="stat-value" id="axel-убеждение">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="axel-убеждение" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="axel-убеждение" data-action="plus">+</button>
-    </div>
-    <div class="stat-row">
-      <span class="stat-name">Уход за животными:</span>
-      <span class="stat-value" id="axel-уход-за-животными">0  (+0)</span>
-      <button class="adjust-skill-btn" data-target="axel-уход-за-животными" data-action="minus">-</button>
-	  <button class="adjust-skill-btn" data-target="axel-уход-за-животными" data-action="plus">+</button>
-    </div>
-  </ul>
-</div>
-
-<div class="traits-column">
-  <h4>Черты характера</h4>
-  <input type="text" id="axel-traits" placeholder="Черты характера" />
-<br>
-  <h4>Умения</h4>
-  <div class="abilities">
-    <input type="text" id="axel-ability1" placeholder="Название умения 1" class="short" />
-    <textarea  type="text" id="axel-ability2" placeholder="Описание умения 1" class="long" /></textarea>
-    <input type="text" id="axel-ability3" placeholder="Название умения 2" class="short" />
-    <textarea type="text" id="axel-ability4" placeholder="Описание умения 2" class="long" /></textarea>
-    <input type="text" id="axel-ability5" placeholder="Название умения 3" class="short" />
-    <textarea type="text" id="axel-ability6" placeholder="Описание умения 3" class="long" /></textarea>
-    <input type="text" id="axel-ability7" placeholder="Название умения 4" class="short" />
-    <textarea type="text" id="axel-ability8" placeholder="Описание умения 4" class="long" /></textarea>
-    <input type="text" id="axel-ability9" placeholder="Название умения 5" class="short" />
-    <textarea type="text" id="axel-ability10" placeholder="Описание умения 5" class="long" /></textarea>
-  </div>
-</div>
- <div class="stats-column">
-  <h4>Характеристики</h4>
-  <br>
-  <p>Идеалы</p>
-  <textarea type="text" id="axel-ideals" placeholder="Идеалы" /></textarea>
-  <br>
-  <p>Привязанности</p>
-  <textarea type="text" id="axel-bonds" placeholder="Привязанности" /></textarea>
-  <br>
-  <p>Слабости</p>
-  <textarea type="text" id="axel-flaws" placeholder="Слабости" /></textarea>
-  <br>
-  <p>Владение языками</p>
-  <textarea type="text" id="axel-languages" placeholder="Владение языками" /></textarea>
-	<br>
-  <button class="save-traits-btn" data-character="axel">Сохранить изменения</button>
-</div>
+	<div class="character-avatar">
+		<img src="../images/avatar1.png" alt="Лекса" />
+		<br>
+		<h2 align="left"><span id="axel-name">-</span></h2>
+		<p align="left"><span id="axel-race">-</span></p>
+		<p align="left"><span id="axel-class">-</span></p>
+	</div>
+	
+	<div class="character-columns">
+		<div class="left-columns"> <!-- Левая группа -->
+			<div class="top-left">
+				<div class="character-stats">
+					<ul>
+						<div class="stat-row">
+							<span class="stat-name">Вдохновение:</span>
+							<span class="stat-value" id="axel-inspiration">-</span>
+							<button class="adjust-btn" data-target="axel-inspiration" data-action="minus">-</button>
+							<button class="adjust-btn" data-target="axel-inspiration" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Класс брони:</span>
+							<span class="stat-value" id="axel-ac">-</span>
+							<button class="adjust-btn" data-target="axel-ac" data-action="minus">-</button>
+							<button class="adjust-btn" data-target="axel-ac" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Инициатива:</span>
+							<span class="stat-value" id="axel-initiative">-</span>
+							<button class="adjust-btn" data-target="axel-initiative" data-action="minus">-</button>
+							<button class="adjust-btn" data-target="axel-initiative" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Скорость:</span>
+							<span class="stat-value" id="axel-speed">-</span>
+							<button class="adjust-btn" data-target="axel-speed" data-action="minus">-</button>
+							<button class="adjust-btn" data-target="axel-speed" data-action="plus">+</button>
+						</div>
+					
+						<br>
+					
+						<div class="stat-row">
+							<span class="stat-name">Уровень:</span>
+							<span class="stat-value" id="axel-lvl">-</span>
+							<button class="adjust-btn" data-target="axel-lvl" data-action="minus">-</button>
+							<button class="adjust-btn" data-target="axel-lvl" data-action="plus">+</button>
+						</div>
+					
+						<br>
+					
+						<div class="stat-row">
+							<span class="stat-name">Макс хиты:</span>
+							<span class="stat-value" id="axel-max-hp">-</span>
+							<button class="adjust-btn" data-target="axel-max-hp" data-action="minus">-</button>
+							<button class="adjust-btn" data-target="axel-max-hp" data-action="plus">+</button>
+						</div>
+		
+						<div class="stat-row">
+							<span class="stat-name">Хиты:</span>
+							<span class="stat-value" id="axel-hp">-</span>
+							<button class="adjust-btn" data-target="axel-hp" data-action="minus">-</button>
+							<button class="adjust-btn" data-target="axel-hp" data-action="plus">+</button>
+						</div>
+		
+						<br>
+		
+						<div class="stat-row">
+							<span class="stat-name">Сила:</span>
+							<span class="stat-value" id="axel-str">-</span>
+							<span id="axel-str-save">0</span> <!-- спасбросок -->
+							<button class="adjust-btn" data-target="axel-str" data-action="minus">-</button>
+							<button class="adjust-btn" data-target="axel-str" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Ловкость:</span>
+							<span class="stat-value" id="axel-dex">-</span>
+							<span id="axel-dex-save">0</span> <!-- спасбросок -->
+							<button class="adjust-btn" data-target="axel-dex" data-action="minus">-</button>
+							<button class="adjust-btn" data-target="axel-dex" data-action="plus">+</button>
+						</div>
+	   
+						<div class="stat-row">
+							<span class="stat-name">Телосложение:</span>
+							<span class="stat-value" id="axel-con">-</span>
+							<span id="axel-con-save">0</span> <!-- спасбросок -->
+							<button class="adjust-btn" data-target="axel-con" data-action="minus">-</button>
+							<button class="adjust-btn" data-target="axel-con" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+								<span class="stat-name">Интеллект:</span>
+								<span class="stat-value" id="axel-int">-</span>
+								<span id="axel-int-save">0</span> <!-- спасбросок -->
+								<button class="adjust-btn" data-target="axel-int" data-action="minus">-</button>
+								<button class="adjust-btn" data-target="axel-int" data-action="plus">+</button>
+						</div>
+		
+						<div class="stat-row">
+							<span class="stat-name">Мудрость:</span>
+							<span class="stat-value" id="axel-wis">-</span>
+							<span id="axel-wis-save">0</span> <!-- спасбросок -->
+							<button class="adjust-btn" data-target="axel-wis" data-action="minus">-</button>
+							<button class="adjust-btn" data-target="axel-wis" data-action="plus">+</button>
+						</div>
+	   
+						<div class="stat-row">
+							<span class="stat-name">Харизма:</span>
+							<span class="stat-value" id="axel-cha">-</span>
+							<span id="axel-cha-save">0</span> <!-- спасбросок -->
+							<button class="adjust-btn" data-target="axel-cha" data-action="minus">-</button>
+							<button class="adjust-btn" data-target="axel-cha" data-action="plus">+</button>
+						</div>
+					</ul>
+				</div>
+	  
+				<div class="skills-column">
+					<ul>
+						<div class="stat-row">
+							<span class="stat-name">Акробатика:</span>
+							<span class="stat-value" id="axel-акробатика">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="axel-акробатика" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="axel-акробатика" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Анализ:</span>
+							<span class="stat-value" id="axel-анализ">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="axel-анализ" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="axel-анализ" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Атлетика:</span>
+							<span class="stat-value" id="axel-атлетика">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="axel-атлетика" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="axel-атлетика" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Восприятие:</span>
+							<span class="stat-value" id="axel-восприятие">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="axel-восприятие" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="axel-восприятие" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Выживание:</span>
+							<span class="stat-value" id="axel-выживание">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="axel-выживание" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="axel-выживание" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Выступление:</span>
+							<span class="stat-value" id="axel-выступление">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="axel-выступление" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="axel-выступление" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Запугивание:</span>
+							<span class="stat-value" id="axel-запугивание">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="axel-запугивание" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="axel-запугивание" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">История:</span>
+							<span class="stat-value" id="axel-история">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="axel-история" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="axel-история" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Ловкость рук:</span>
+							<span class="stat-value" id="axel-ловкость-рук">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="axel-ловкость-рук" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="axel-ловкость-рук" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Магия:</span>
+							<span class="stat-value" id="axel-магия">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="axel-магия" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="axel-магия" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Медицина:</span>
+							<span class="stat-value" id="axel-медицина">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="axel-медицина" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="axel-медицина" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Обман:</span>
+							<span class="stat-value" id="axel-обман">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="axel-обман" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="axel-обман" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Природа:</span>
+							<span class="stat-value" id="axel-природа">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="axel-природа" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="axel-природа" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Проницательность:</span>
+							<span class="stat-value" id="axel-проницательность">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="axel-проницательность" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="axel-проницательность" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Религия:</span>
+							<span class="stat-value" id="axel-религия">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="axel-религия" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="axel-религия" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Скрытность:</span>
+							<span class="stat-value" id="axel-скрытность">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="axel-скрытность" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="axel-скрытность" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Убеждение:</span>
+							<span class="stat-value" id="axel-убеждение">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="axel-убеждение" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="axel-убеждение" data-action="plus">+</button>
+						</div>
+					
+						<div class="stat-row">
+							<span class="stat-name">Уход за животными:</span>
+							<span class="stat-value" id="axel-уход-за-животными">0  (+0)</span>
+							<button class="adjust-skill-btn" data-target="axel-уход-за-животными" data-action="minus">-</button>
+							<button class="adjust-skill-btn" data-target="axel-уход-за-животными" data-action="plus">+</button>
+						</div>
+					</ul>
+				</div>
+			</div>
+			
+			<div class="inventory-section">
+			  <h3>Инвентарь</h3>
+			  <textarea id="axel-inventory" placeholder="Введите предметы, ресурсы и снаряжение"></textarea>
+			  <button class="save-inventory-btn" data-character="axel">💾 Сохранить инвентарь</button>
+			</div>
+		</div>
+	
+		<div class="right-columns"> <!-- Правая группа -->
+			<div class="traits-column">
+				<h4>Черты характера</h4>
+				<input type="text" id="axel-traits" placeholder="Черты характера" />
+				<br>
+				<h4>Умения</h4>
+				<div class="abilities">
+					<input type="text" id="axel-ability1" placeholder="Название умения 1" class="short" />
+					<textarea  type="text" id="axel-ability2" placeholder="Описание умения 1" class="long" ></textarea>
+					<input type="text" id="axel-ability3" placeholder="Название умения 2" class="short" />
+					<textarea type="text" id="axel-ability4" placeholder="Описание умения 2" class="long" ></textarea>
+					<input type="text" id="axel-ability5" placeholder="Название умения 3" class="short" />
+					<textarea type="text" id="axel-ability6" placeholder="Описание умения 3" class="long" ></textarea>
+					<input type="text" id="axel-ability7" placeholder="Название умения 4" class="short" />
+					<textarea type="text" id="axel-ability8" placeholder="Описание умения 4" class="long" ></textarea>
+					<input type="text" id="axel-ability9" placeholder="Название умения 5" class="short" />
+					<textarea type="text" id="axel-ability10" placeholder="Описание умения 5" class="long" ></textarea>
+				</div>
+			</div>
+		
+			<div class="stats-column">
+				<h4>Характеристики</h4>
+				<br>
+				<p>Идеалы</p>
+				<textarea type="text" id="axel-ideals" placeholder="Идеалы" ></textarea>
+				<br>
+				<p>Привязанности</p>
+				<textarea type="text" id="axel-bonds" placeholder="Привязанности" ></textarea>
+				<br>
+				<p>Слабости</p>
+				<textarea type="text" id="axel-flaws" placeholder="Слабости" ></textarea>
+				<br>
+				<p>Владение языками</p>
+				<textarea type="text" id="axel-languages" placeholder="Владение языками" ></textarea>
+				<br>
+				<button class="save-traits-btn" data-character="axel">Сохранить изменения</button>
+			</div>
+		</div>
+	</div>
 
 </div>
 
