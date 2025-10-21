@@ -1,0 +1,386 @@
+body {
+font-family: Arial, sans-serif;
+  background-color: #1a1a1a;
+  color: #f0f0f0;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+header {
+  background-color: #222;
+  padding: 10px 20px;
+}
+
+
+.map-container {
+	display: inline-flex; /* ставим блоки в ряд */
+	align-items: flex-start;
+	gap: 20px; /* расстояние между иконками и картой */
+	justify-content: center;
+	margin-top: 20px; 
+	}
+
+/* Позиционирование контейнера с иконками */
+.icon-palette {
+  position: relative;   /* панель позиционируется относительно карты */
+  left: 10px;                 /*отступ от карты влево — подберите под ширину иконок */
+  top: 0;	
+ display: flex;
+ flex-direction: column;
+ gap: 10px;
+ z-index: 100;        /* Повыше, чтобы иконки не загораживали карту */
+ align-items: center;   /* выравниваем иконки по центру панели */
+  background: #2a2a2a;   /* фон панели (можно убрать) */
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #444;
+    flex-shrink: 0;          /* чтобы панель не сжималась */
+ }
+ 
+ /* Для иконок */
+.draggable-icon {
+	width: 36px;
+	height: 36px;
+	cursor: grab; 
+	transition: transform 0.2s;  /* Легкое увеличение на hover */
+	}
+	
+	.draggable-icon:hover {
+  transform: scale(1.2);  /* Увеличение иконки на hover */
+}
+
+/* Контейнер карты */	
+.map-area { 
+position: relative;
+ width: 80%; /* Или фиксированная ширина */
+ border: 2px solid #555;
+ border-radius: 8px;
+ overflow: hidden; 
+  margin: 20px auto; /* Центрируем карту по горизонтали */
+ }
+ 
+.map-area img { width: 100%; height: auto; display: block; }
+.map-icon { position: absolute; max-width: 24px; max-height: 24px; width: 24px; height: 24px; transform: translate(-50%, -50%); cursor: grab; z-index: 10; transition: transform 0.1s ease-in-out; }
+.map-icon:hover { transform: translate(-50%, -50%) scale(1.3); }
+
+.map-controls {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+#map-url-input {
+  width: 400px;
+  padding: 8px;
+  border: 1px solid #555;
+  border-radius: 6px;
+  background-color: #222;
+  color: #fff;
+}
+
+#update-map-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  background-color: #8fd18f;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+#update-map-btn:hover {
+  background-color: #a5e2a5;
+}
+
+.map-area {
+  width: 1224px;
+  height: 700px;
+  border: 2px solid #555;
+  overflow: hidden;
+  position: relative;
+  margin: auto;
+}
+
+.map-inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  cursor: grab;
+}
+
+.map-inner:active {
+  cursor: grabbing;
+}
+
+#map-image, .map-icon {
+  user-drag: none;       /* Safari/Chrome */
+  -webkit-user-drag: none;
+  -moz-user-drag: none;
+  -ms-user-drag: none;
+}
+#map-inner {
+  position: relative; /* чтобы абсолютные иконки позиционировались относительно него */
+  width: 100%;
+  height: 100%;
+  transform-origin: 0 0; /* масштаб и сдвиг будут корректно применяться */
+  transition: transform 0.2s ease; /* Плавное изменение transform за 0.3 секунды */
+}
+
+.map-controls {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.map-controls button {
+background-color: #808080;
+  color: #fff;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.map-controls button:hover {
+  background-color: #A9A9A9;
+}
+
+
+/* Оверлей */
+/* Контейнер для трёх блоков */
+.header-row {
+ display: flex;
+  flex-wrap: nowrap;           /* запрещаем перенос на новую строку */
+  justify-content: flex-start; /* убираем большое расстояние между блоками */
+  align-items: stretch;        /* растягиваем колонки по высоте хедера */
+  gap: 10px;                   /* небольшой промежуток между блоками */
+}
+
+.main-nav {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: stretch;        /* растягивает ссылки по высоте nav */
+  gap: 10px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;         /* текст по вертикали по центру */
+  justify-content: center;
+  padding: 0 16px;             /* горизонтальный отступ */
+  color: #fff;
+  text-decoration: none;
+  border-radius: 0;            /* можно убрать скругление, если хочешь плотное прилегание */
+  transition: background-color 0.2s;
+  height: 100%;                /* занимает всю высоту навбара */
+  border-radius: 6px;
+  white-space: nowrap;       /* запрещаем перенос текста */
+}
+
+.nav-link:hover {
+  background-color: #555;
+}
+
+.nav-link.active {
+  background-color: #8fd18f;
+  color: #000;
+  font-weight: bold;
+}
+
+.overlay {
+  position: static;
+  top: 5px;
+  left: 10px;
+  width: auto;
+  height: auto;
+  flex: 0 0 auto;  /* ширина зависит от содержимого */
+   flex-wrap: wrap;          /* позволяет колонкам переноситься на новую строку */
+  min-width: 280px;             /* чтобы не сжимались слишком сильно */
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 10px;
+  border-radius: 10px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 15px;
+  align-items: flex-start; /* теперь колонки сверху выровнены */
+}
+
+.left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.right-column {
+  display: flex;
+  align-items: center;  /* теперь по центру */
+  justify-content: center; /* дополнительно выровняем вертикально */
+  flex: 0 0 auto;       /* ширина не растягивается, зависит от содержимого */
+}
+
+.dice-buttons {
+  display: grid;
+  grid-template-columns: repeat(6, 40px); /* три кнопки в ряд */
+  grid-template-rows: repeat(1, 25px);   /* две строки */
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.dice-buttons button {
+  background-color: #555;
+  color: white;
+  padding: 5px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.dice-buttons button:hover {
+  background-color: #8fd18f;
+}
+
+.modifiers {
+  display: flex;
+  justify-content: center;
+  margin-top: 1px;
+}
+
+#modifier {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #555;
+  border-radius: 6px;
+  background-color: #222;
+  color: #fff;
+}
+
+.result {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  gap: 15px;
+  width: 90px;             /* ширина под фон */
+  height: 90px;            /* высота под фон */
+  background-image: url('../images/cube.png');
+  background-size: contain; /* картинка под размер блока */
+  background-position: center;
+  background-repeat: no-repeat;
+  color: white;            /* для текста поверх фона */
+  font-size: 1.5em;  /* уменьшили размер */
+}
+
+#dice-result {
+  font-size: 0.7em;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.formula-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  flex: 1;
+}
+
+.formula-column input {
+  padding: 6px;
+  border-radius: 6px;
+  border: 1px solid #555;
+  background-color: #222;
+  color: #fff;
+  margin-bottom: 2px;
+
+}
+
+.formula-column button {
+  padding: 8px;
+  border-radius: 6px;
+  border: none;
+  background-color: #555;
+  color: #fff;
+  cursor: pointer;
+}
+
+.formula-column button:hover {
+  background-color: #8fd18f;
+}
+.right-column .result {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative; /* чтобы фон позиционировался относительно этого блока */
+  gap: 15px;
+}
+
+.result .result-bg {
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* центрируем по оси X и Y */
+  width: 80px;  /* можно подогнать под размеры блока */
+  height: 80px; /* можно подогнать под размеры блока */
+  z-index: 0;   /* чтобы фон был за текстом */
+  object-fit: contain; /* сохраняет пропорции картинки */
+}
+
+#dice-result {
+  position: relative;
+  z-index: 1; /* текст поверх картинки */
+}
+
+.formula-history-overlay {
+  position: static;
+  top: 5px;
+  right: 10px;
+  width: auto;
+  height: auto;
+  flex: 1 1 300px;              /* адаптивная ширина */
+  min-width: 280px;             /* чтобы не сжимались слишком сильно */
+  max-height: 200px;
+  background-color: rgba(0,0,0,0.7);
+  color: white;
+  padding: 10px;
+  border-radius: 10px;
+  z-index: 9998;
+  overflow-y: auto;
+}
+
+#formula-history-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 4.2em;     /* примерно 2 строки (1.3em × 2) */
+  overflow-y: auto;      /* скроллим только содержимое */
+  scrollbar-width: thin; /* узкий скролл для Firefox */
+}
+
+#formula-history-list li {
+  padding: 4px 6px;
+  border-bottom: 1px solid #555;
+  font-size: 0.9em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#formula-history-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.formula-history-overlay p {
+  margin: 0;            /* Убираем отступы у параграфа */
+  font-size: 15px;      /* Размер шрифта заголовка */
+  text-align: center;   /* Выравнивание по центру */
+}
