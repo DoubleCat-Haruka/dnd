@@ -396,7 +396,9 @@ header {
   margin-left: 20px;
   display: flex;
   flex-direction: column;
-  width: 250px;
+  width: 350px;
+  padding-left: 20px;
+  border-left: 1px solid #888;
 }
 
 .traits-column .abilities {
@@ -409,21 +411,23 @@ header {
   margin-bottom: 5px;
   padding: 4px;
   font-size: 14px;
+  border-radius: 6px;
+  width: 100%;
 }
 
 .traits-column input.short {
-  width: 120px;
+  width: 50%;
   box-sizing: border-box;
 }
 
 .traits-column input.long {
-  width: 240px;
+  width: 100%;
+  height: 4em;
   box-sizing: border-box;
 }
 .traits-column p {
   margin: 0px;
 }
-
 .save-traits-btn {
   margin: 10px 0;
   padding: 5px 10px;
@@ -434,8 +438,46 @@ header {
 	margin-bottom: 0px;
 	border-radius: 6px;
 }
+.stats-column {
+  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  width: 350px;
+}
 
 .stats-column input {
+  padding: 4px;
   width: 100%;
   box-sizing: border-box;
 }
+.stats-column p,h4 {
+  margin: 0px;
+  text-align: left; /* Выравнивание текста по левому краю */
+}
+.stats-column input {
+	margin-bottom: 0px;
+	border-radius: 6px;
+}
+
+.stats-column textarea {
+  width: 100%;
+  min-height: 80px;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.4;
+  padding: 6px 8px;
+  border-radius: 6px;
+}
+
+.traits-column textarea {
+  width: 100%;
+  min-height: 80px;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.4;
+  padding: 6px 8px;
+  border-radius: 6px;
+}
+
