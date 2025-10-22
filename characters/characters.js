@@ -141,6 +141,12 @@ function loadCharacterData(characterId, prefix) {
       const el = document.getElementById(`${prefix}-ability${i}`);
       if (el) el.value = abilitiesData[i - 1] || "";
     }
+	
+	// === Подгружаем инвентарь ===
+	const inventoryField = document.getElementById(`${prefix}-inventory`);
+	if (inventoryField) inventoryField.value = doc.data().inventory || "";
+
+	
   });
 }
 
@@ -228,6 +234,50 @@ document.querySelectorAll(".save-traits-btn").forEach(btn => {
 
     await dbRef.set(data, { merge: true });
     alert("Изменения сохранены!");
+  });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".save-inventory-btn").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const character = btn.dataset.character;
+
+      const inventoryText = document.getElementById(`${character}-inventory`).value;
+      const gold = parseInt(document.getElementById(`${character}-gold`).value) || 0;
+      const silver = parseInt(document.getElementById(`${character}-silver`).value) || 0;
+      const copper = parseInt(document.getElementById(`${character}-copper`).value) || 0;
+
+      try {
+        await db.collection("characters").doc(character).set(
+          {
+            inventory: inventoryText,
+            coins: { gold, silver, copper }
+          },
+          { merge: true }
+        );
+        alert("Инвентарь и монеты сохранены!");
+      } catch (error) {
+        console.error("Ошибка при сохранении инвентаря:", error);
+        alert("Не удалось сохранить. Проверь консоль.");
+      }
+    });
+// Загружаем данные из Firestore при старте
+    const character = btn.dataset.character;
+    db.collection("characters").doc(character).get().then(doc => {
+      if (doc.exists) {
+        const data = doc.data();
+
+        if (data.inventory) {
+          document.getElementById(`${character}-inventory`).value = data.inventory;
+        }
+
+        if (data.coins) {
+          document.getElementById(`${character}-gold`).value = data.coins.gold ?? 0;
+          document.getElementById(`${character}-silver`).value = data.coins.silver ?? 0;
+          document.getElementById(`${character}-copper`).value = data.coins.copper ?? 0;
+        }
+      }
+    }).catch(error => console.error("Ошибка при загрузке данных:", error));
   });
 });
 

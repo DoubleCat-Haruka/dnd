@@ -315,9 +315,25 @@
 			</div>
 			
 			<div class="inventory-section">
-			  <h3>Инвентарь</h3>
-			  <textarea id="lexa-inventory" placeholder="Введите предметы, ресурсы и снаряжение"></textarea>
-			  <button class="save-inventory-btn" data-character="lexa">💾 Сохранить инвентарь</button>
+				<h3>Инвентарь</h3>
+				<textarea id="lexa-inventory" placeholder="Введите предметы, ресурсы и снаряжение"></textarea>
+				<div class="coins">
+					<label>
+						<span class="coin gold"></span>
+						<input type="number" id="lexa-gold" min="0" value="0">
+					</label>
+					
+					<label>
+						<span class="coin silver"></span>
+						<input type="number" id="lexa-silver" min="0" value="0">
+					</label>
+					
+					<label>
+						<span class="coin copper"></span>
+						<input type="number" id="lexa-copper" min="0" value="0">
+					</label>
+				</div>
+				<button class="save-inventory-btn" data-character="lexa">💾 Сохранить инвентарь</button>
 			</div>
 		</div>
 	
@@ -356,7 +372,7 @@
 				<p>Владение языками</p>
 				<textarea type="text" id="lexa-languages" placeholder="Владение языками" ></textarea>
 				<br>
-				<button class="save-traits-btn" data-character="lexa">Сохранить изменения</button>
+				<button class="save-traits-btn" data-character="lexa">💾 Сохранить изменения</button>
 			</div>
 		</div>
 	</div>
@@ -368,7 +384,7 @@
 	<!-- ************************Аксель********************************* -->
 <div class="character-info" id="axel-info" style="display: none;">
 	<div class="character-avatar">
-		<img src="../images/avatar1.png" alt="Лекса" />
+		<img src="../images/avatar2.png" alt="Аксель" />
 		<br>
 		<h2 align="left"><span id="axel-name">-</span></h2>
 		<p align="left"><span id="axel-race">-</span></p>
@@ -619,6 +635,22 @@
 			<div class="inventory-section">
 			  <h3>Инвентарь</h3>
 			  <textarea id="axel-inventory" placeholder="Введите предметы, ресурсы и снаряжение"></textarea>
+			  <div class="coins">
+					<label>
+						<span class="coin gold"></span>
+						<input type="number" id="lexa-gold" min="0" value="0">
+					</label>
+					
+					<label>
+						<span class="coin silver"></span>
+						<input type="number" id="lexa-silver" min="0" value="0">
+					</label>
+					
+					<label>
+						<span class="coin copper"></span>
+						<input type="number" id="lexa-copper" min="0" value="0">
+					</label>
+				</div>
 			  <button class="save-inventory-btn" data-character="axel">💾 Сохранить инвентарь</button>
 			</div>
 		</div>

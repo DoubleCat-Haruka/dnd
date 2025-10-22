@@ -496,3 +496,110 @@ header {
   border-radius: 6px;
 }
 
+.character-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  width: 100%;
+}
+
+/* Новый блок — отдельный, под обеими колонками */
+.inventory-section {
+  margin-top: 30px;
+  padding: 15px;
+  border: 2px solid #555;
+  border-radius: 10px;
+  background-color: #2a2a2a;
+  color: #fff;
+  width: 100%;
+  box-sizing: border-box;
+  grid-column: span 2; /* на случай, если внутри grid */
+}
+
+.inventory-section h3 {
+  margin: 0px;
+  text-align: center;
+}
+
+.inventory-section textarea {
+  width: 90%;
+  height: 150px;
+  background-color: #1e1e1e;
+  color: #fff;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 10px;
+  resize: vertical;
+}
+
+.save-inventory-btn {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background-color: #444;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.save-inventory-btn:hover {
+  background-color: #666;
+}
+
+.save-traits-btn {
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px 12px;
+  background-color: #444;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.save-traits-btn:hover {
+  background-color: #666;
+}
+.coins {
+  display: flex;
+  gap: 1rem;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.coins label {
+  display: flex;
+  align-items: left;
+  gap: 5px;
+  margin-left: 15px;
+}
+
+.coin {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: inline-block;
+  border: 1px solid #333;
+}
+
+.coin.gold {
+  background: radial-gradient(circle at 30% 30%, #ffd700, #b8860b);
+}
+
+.coin.silver {
+  background: radial-gradient(circle at 30% 30%, #c0c0c0, #808080);
+}
+
+.coin.copper {
+  background: radial-gradient(circle at 30% 30%, #b87333, #8b4513);
+}
+
+.coins input {
+  width: 70px;
+  text-align: center;
+  border-radius: 6px;
+}
