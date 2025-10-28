@@ -428,17 +428,26 @@ header {
   font-size: 14px;
   border-radius: 6px;
   width: 100%;
+  background-color: #1e1e1e;
+  color: #fff;
+  border: 1px solid #444;
 }
 
 .traits-column input.short {
   width: 50%;
   box-sizing: border-box;
+  background-color: #1e1e1e;
+  color: #fff;
+  border: 1px solid #444;
 }
 
 .traits-column input.long {
   width: 100%;
   height: 4em;
   box-sizing: border-box;
+  background-color: #1e1e1e;
+  color: #fff;
+  border: 1px solid #444;
 }
 .traits-column p {
   margin: 0px;
@@ -452,6 +461,9 @@ header {
 .abilities input {
 	margin-bottom: 0px;
 	border-radius: 6px;
+	background-color: #1e1e1e;
+  color: #fff;
+  border: 1px solid #444;
 }
 .stats-column {
   margin-left: 20px;
@@ -464,6 +476,9 @@ header {
   padding: 4px;
   width: 100%;
   box-sizing: border-box;
+  background-color: #1e1e1e;
+  color: #fff;
+  border: 1px solid #444;
 }
 .stats-column p,h4 {
   margin: 0px;
@@ -472,6 +487,9 @@ header {
 .stats-column input {
 	margin-bottom: 0px;
 	border-radius: 6px;
+	background-color: #1e1e1e;
+  color: #fff;
+  border: 1px solid #444;
 }
 
 .stats-column textarea {
@@ -483,6 +501,9 @@ header {
   line-height: 1.4;
   padding: 6px 8px;
   border-radius: 6px;
+  background-color: #1e1e1e;
+  color: #fff;
+  border: 1px solid #444;
 }
 
 .traits-column textarea {
@@ -494,6 +515,9 @@ header {
   line-height: 1.4;
   padding: 6px 8px;
   border-radius: 6px;
+  background-color: #1e1e1e;
+  color: #fff;
+  border: 1px solid #444;
 }
 
 .character-wrapper {
@@ -602,4 +626,119 @@ header {
   width: 70px;
   text-align: center;
   border-radius: 6px;
+  background-color: #1e1e1e;
+  color: #fff;
+  border: 1px solid #444;
+}
+
+.equipment-section.full-width {
+  flex-basis: 1400px;
+  width: 100%;
+  display: block;
+  margin-top: 20px;
+  order: 999; /* чтобы шёл после других, если flex их сортирует */
+  margin-top: 30px;
+  margin-left: 190px;
+  padding: 15px;
+  border-radius: 10px;
+  border: 2px solid #555;
+  clear: both;
+  background-color: #2a2a2a;
+  color: #fff;
+}
+
+
+/* Если родитель использует grid и ты хочешь растянуть по всем колонкам */
+.parent-grid > .equipment-section.full-width,
+.grid-container > .equipment-section.full-width {
+  grid-column: 1 / -1 !important;
+}
+
+/* Разрешаем перенос внутри контейнера .character-info,
+   чтобы элементы с flex-basis:100% могли начинать новую строку */
+.character-info {
+  display: flex;          /* уже было */
+  flex-direction: row;    /* оставляем текущую логику — аватарка + колонки в ряд */
+  flex-wrap: wrap;        /* ВАЖНО — разрешаем перенос строк */
+  align-items: flex-start;/* как было */
+}
+
+.armor {
+	width: 95%;
+	border-radius: 6px;
+	background-color: #1e1e1e;
+  color: #fff;
+  border: 1px solid #444;
+}
+
+.weapon-name{
+	width: 15%;
+	border-radius: 6px;
+	background-color: #1e1e1e;
+  color: #fff;
+  border: 1px solid #444;
+}
+
+.weapon-hit{
+	width: 19%;
+	border-radius: 6px;
+	background-color: #1e1e1e;
+  color: #fff;
+  border: 1px solid #444;
+}
+
+.weapon-dmg{
+	width: 19%;
+	border-radius: 6px;
+	background-color: #1e1e1e;
+  color: #fff;
+  border: 1px solid #444;
+}
+
+.weapon-crit{
+	width: 19%;
+	border-radius: 6px;
+	background-color: #1e1e1e;
+  color: #fff;
+  border: 1px solid #444;
+}
+
+.skill-name{
+	width: 70%;
+	border-radius: 6px;
+	overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background-color: #1e1e1e;
+  color: #fff;
+  border: 1px solid #444;
+}
+
+.skill-form{
+	width: 20%;
+	border-radius: 6px;
+	background-color: #1e1e1e;
+  color: #fff;
+  border: 1px solid #444;
+}
+
+.save-equipment-btn {
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px 12px;
+  background-color: #444;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.save-equipment-btn:hover {
+  background-color: #666;
+}
+
+.input-tooltip {
+  font-size: 12px;
+  pointer-events: none;
 }

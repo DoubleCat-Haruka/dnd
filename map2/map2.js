@@ -300,92 +300,131 @@ const RESULT_DOC = "currentResult";       // документ с текущим 
 
 const FORMULA_COLLECTION = "formulaHistory"; // коллекция истории формул
 const FORMULA_DOC = "lastFormulas";          // документ для последних 8 формул
-
+// Функция для сохранения результата в Firebase
 function saveResultToFirebase(finalResult, color) {
   db.collection(RESULT_COLLECTION).doc(RESULT_DOC).set({
-    result: finalResult,
-    color: color,
-    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    result: finalResult,  // Результат броска
+    color: color,         // Цвет результата
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()  // Время сохранения
   });
 }
 
+// Функция для сохранения формулы в Firebase
 function saveFormulaToFirebase(formula) {
   const docRef = db.collection(FORMULA_COLLECTION).doc(FORMULA_DOC);
 
   docRef.get().then(doc => {
     let formulas = [];
     if (doc.exists) {
-      formulas = doc.data().formulas || [];
+      formulas = doc.data().formulas || [];  // Если уже есть формулы, добавляем новые
     }
 
-    formulas.push(formula);
+    formulas.push(formula);  // Добавляем новую формулу
 
+    // Ограничиваем количество формул до 8
     if (formulas.length > 8) {
       formulas = formulas.slice(formulas.length - 8);
     }
 
-    docRef.set({ formulas: formulas });
+    docRef.set({ formulas: formulas });  // Сохраняем обновлённый список формул
   });
 }
 
+// Функция для броска кости
 function rollDice(sides) {
   const modifierInput = document.getElementById("modifier").value;
-  let modifier = parseInt(modifierInput) || 0;
+  const modifier = parseInt(modifierInput) || 0;
 
   const roll = Math.floor(Math.random() * sides) + 1;
   const finalResult = roll + modifier;
 
   const diceResultElement = document.getElementById("dice-result");
 
+  // Цвет в зависимости от броска
   if (roll === 1) diceResultElement.style.color = 'red';
   else if (roll === sides) diceResultElement.style.color = 'green';
   else diceResultElement.style.color = 'MediumVioletRed';
 
-  diceResultElement.textContent = `${finalResult}`;
+  diceResultElement.textContent = finalResult;
 
-  // сохраняем результат
+  // Сохраняем результат в Firebase
   saveResultToFirebase(finalResult, diceResultElement.style.color);
+
+  // === Формируем текст формулы для истории ===
+  let formulaText;
+  if (modifier !== 0) {
+    const sign = modifier > 0 ? "+" : "";
+    formulaText = `D${sides}${sign}${modifier} [${roll}] = ${finalResult}`;
+  } else {
+    formulaText = `D${sides} [${roll}] = ${finalResult}`;
+  }
+
+  saveFormulaToFirebase(formulaText);
+
+  console.log(`Бросок ${formulaText}`);
 }
 
-function rollFormula() {
-  const formulaInput = document.getElementById("formula").value;
-  const modifierInput = document.getElementById("modifier").value;
 
-  let modifier = parseInt(modifierInput) || 0;
+
+// Функция для работы с произвольной формулой
+// Функция для работы с произвольной формулой
+// Функция для работы с произвольной формулой
+function rollFormula() {
+  const formulaInput = document.getElementById("formula").value.trim();  // Получаем формулу
+  const modifierInput = document.getElementById("modifier").value.trim();  // Получаем модификатор
+
+  let modifier = parseInt(modifierInput) || 0;  // Преобразуем модификатор в число
 
   let hitsMin = false;
   let hitsMax = false;
+  let rollsList = []; // Сюда запишем все выпавшие значения кубиков
 
-  const formula = formulaInput.toUpperCase().replace(/D(\d+)/g, (match, sides) => {
+  // Замена D(число) на случайное значение кубика
+  const replacedFormula = formulaInput.toUpperCase().replace(/(\d*)D(\d+)/g, (match, count, sides) => {
     sides = parseInt(sides);
-    const roll = Math.floor(Math.random() * sides) + 1;
-    if (roll === 1) hitsMin = true;
-    if (roll === sides) hitsMax = true;
-    return roll;
+    count = parseInt(count) || 1;
+
+    const rolls = [];
+    for (let i = 0; i < count; i++) {
+      const roll = Math.floor(Math.random() * sides) + 1;
+      rolls.push(roll);
+      if (roll === 1) hitsMin = true;
+      if (roll === sides) hitsMax = true;
+    }
+
+    rollsList.push(...rolls); // добавляем в общий список всех бросков
+    return rolls.reduce((a, b) => a + b, 0); // сумма всех бросков по формуле
   });
 
   let result;
   try {
-    result = Math.max(1, Math.floor(eval(formula) + modifier));
+    result = Math.max(1, Math.floor(eval(replacedFormula) + modifier)); // Вычисляем результат формулы
   } catch (e) {
-    alert("Некорректная формула!");
+    alert("Некорректная формула!"); // Ошибка при вычислении формулы
     return;
   }
 
   const diceResultElement = document.getElementById("dice-result");
 
+  // Цвет результата
   if (hitsMin) diceResultElement.style.color = 'red';
   else if (hitsMax) diceResultElement.style.color = 'green';
   else diceResultElement.style.color = 'MediumVioletRed';
 
   diceResultElement.textContent = `${result}`;
 
-  // сохраняем результат
+  // Сохраняем результат в Firebase
   saveResultToFirebase(result, diceResultElement.style.color);
 
-  // сохраняем формулу в историю
-  saveFormulaToFirebase(formulaInput);
+  // Формируем красивую строку с выпавшими значениями
+  const rollsText = rollsList.length ? ` [${rollsList.join(", ")}]` : "";
+
+  // сохраняем формулу в историю: "2D6+3 [4,6] = 13"
+  const fullRecord = `${formulaInput}${rollsText} = ${result}`;
+  saveFormulaToFirebase(fullRecord);
 }
+
+
 
 // real-time обновление истории формул
 db.collection(FORMULA_COLLECTION).doc(FORMULA_DOC)
@@ -403,7 +442,7 @@ db.collection(FORMULA_COLLECTION).doc(FORMULA_DOC)
     }
   });
   
-  // Слушаем изменения в реальном времени
+// Слушаем изменения в реальном времени для отображения текущего результата
 db.collection(RESULT_COLLECTION).doc(RESULT_DOC)
   .onSnapshot(doc => {
     if (doc.exists) {

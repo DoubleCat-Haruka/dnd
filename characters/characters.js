@@ -24,7 +24,11 @@ function formatModifier(value) {
 }
 
 // --- БОНУС МАСТЕРСТВА (пока фиксирован)
-const PROF_BONUS = 2;
+let PROF_BONUS = 2; // начальное значение
+
+
+
+
 
 // Карта навыков → основной характеристики
 const skillToStat = {
@@ -145,6 +149,16 @@ function loadCharacterData(characterId, prefix) {
 	// === Подгружаем инвентарь ===
 	const inventoryField = document.getElementById(`${prefix}-inventory`);
 	if (inventoryField) inventoryField.value = doc.data().inventory || "";
+	
+	 // --- После полной загрузки данных: пересчитываем PROF_BONUS ---
+    const level = stats["Уровень"];
+    if (level >= 1 && level <= 4) PROF_BONUS = 2;
+    else if (level >= 5 && level <= 8) PROF_BONUS = 3;
+    else if (level >= 9 && level <= 12) PROF_BONUS = 4;
+    else if (level >= 13 && level <= 16) PROF_BONUS = 5;
+    else if (level >= 17 && level <= 20) PROF_BONUS = 6;
+
+    console.log(`[PROF_BONUS] ${characterId}: уровень=${level}, PROF_BONUS=${PROF_BONUS}`);
 
 	
   });
@@ -450,47 +464,73 @@ function saveFormulaToFirebase(formula) {
 
 // Функция для броска кости
 function rollDice(sides) {
-  const modifierInput = document.getElementById("modifier").value;  // Получаем модификатор
-  let modifier = parseInt(modifierInput) || 0;  // Преобразуем в число (по умолчанию 0)
+  const modifierInput = document.getElementById("modifier").value;
+  const modifier = parseInt(modifierInput) || 0;
 
-  const roll = Math.floor(Math.random() * sides) + 1;  // Бросаем кость
-  const finalResult = roll + modifier;  // Итоговый результат с модификатором
+  const roll = Math.floor(Math.random() * sides) + 1;
+  const finalResult = roll + modifier;
 
   const diceResultElement = document.getElementById("dice-result");
 
-  // Изменяем цвет результата в зависимости от того, какой выпал результат
+  // Цвет в зависимости от броска
   if (roll === 1) diceResultElement.style.color = 'red';
   else if (roll === sides) diceResultElement.style.color = 'green';
   else diceResultElement.style.color = 'MediumVioletRed';
 
-  diceResultElement.textContent = `${finalResult}`;  // Отображаем результат
+  diceResultElement.textContent = finalResult;
 
   // Сохраняем результат в Firebase
   saveResultToFirebase(finalResult, diceResultElement.style.color);
+
+  // === Формируем текст формулы для истории ===
+  let formulaText;
+  if (modifier !== 0) {
+    const sign = modifier > 0 ? "+" : "";
+    formulaText = `D${sides}${sign}${modifier} [${roll}] = ${finalResult}`;
+  } else {
+    formulaText = `D${sides} [${roll}] = ${finalResult}`;
+  }
+
+  saveFormulaToFirebase(formulaText);
+
+  console.log(`Бросок ${formulaText}`);
 }
 
+
+
+// Функция для работы с произвольной формулой
+// Функция для работы с произвольной формулой
 // Функция для работы с произвольной формулой
 function rollFormula() {
-  const formulaInput = document.getElementById("formula").value;  // Получаем формулу
-  const modifierInput = document.getElementById("modifier").value;  // Получаем модификатор
+  const formulaInput = document.getElementById("formula").value.trim();  // Получаем формулу
+  const modifierInput = document.getElementById("modifier").value.trim();  // Получаем модификатор
 
   let modifier = parseInt(modifierInput) || 0;  // Преобразуем модификатор в число
 
   let hitsMin = false;
   let hitsMax = false;
+  let rollsList = []; // Сюда запишем все выпавшие значения кубиков
 
   // Замена D(число) на случайное значение кубика
-  const formula = formulaInput.toUpperCase().replace(/D(\d+)/g, (match, sides) => {
+  const replacedFormula = formulaInput.toUpperCase().replace(/(\d*)D(\d+)/g, (match, count, sides) => {
     sides = parseInt(sides);
-    const roll = Math.floor(Math.random() * sides) + 1;
-    if (roll === 1) hitsMin = true;
-    if (roll === sides) hitsMax = true;
-    return roll;
+    count = parseInt(count) || 1;
+
+    const rolls = [];
+    for (let i = 0; i < count; i++) {
+      const roll = Math.floor(Math.random() * sides) + 1;
+      rolls.push(roll);
+      if (roll === 1) hitsMin = true;
+      if (roll === sides) hitsMax = true;
+    }
+
+    rollsList.push(...rolls); // добавляем в общий список всех бросков
+    return rolls.reduce((a, b) => a + b, 0); // сумма всех бросков по формуле
   });
 
   let result;
   try {
-    result = Math.max(1, Math.floor(eval(formula) + modifier)); // Вычисляем результат формулы
+    result = Math.max(1, Math.floor(eval(replacedFormula) + modifier)); // Вычисляем результат формулы
   } catch (e) {
     alert("Некорректная формула!"); // Ошибка при вычислении формулы
     return;
@@ -498,19 +538,25 @@ function rollFormula() {
 
   const diceResultElement = document.getElementById("dice-result");
 
-  // Устанавливаем цвет в зависимости от минимального или максимального значения кубика
+  // Цвет результата
   if (hitsMin) diceResultElement.style.color = 'red';
   else if (hitsMax) diceResultElement.style.color = 'green';
   else diceResultElement.style.color = 'MediumVioletRed';
 
   diceResultElement.textContent = `${result}`;
 
-  // сохраняем результат в Firebase
+  // Сохраняем результат в Firebase
   saveResultToFirebase(result, diceResultElement.style.color);
 
-  // сохраняем формулу в историю
-  saveFormulaToFirebase(formulaInput);
+  // Формируем красивую строку с выпавшими значениями
+  const rollsText = rollsList.length ? ` [${rollsList.join(", ")}]` : "";
+
+  // сохраняем формулу в историю: "2D6+3 [4,6] = 13"
+  const fullRecord = `${formulaInput}${rollsText} = ${result}`;
+  saveFormulaToFirebase(fullRecord);
 }
+
+
 
 // real-time обновление истории формул
 db.collection(FORMULA_COLLECTION).doc(FORMULA_DOC)
@@ -543,3 +589,199 @@ db.collection(RESULT_COLLECTION).doc(RESULT_DOC)
   });
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+// --- Загрузка экипировки и умений (20 skills) ---
+async function loadEquipment(characterId) {
+  const prefix = characterId;
+  try {
+    const docRef = db.collection('characters').doc(prefix);
+    const docSnap = await docRef.get();
+    if (!docSnap.exists) return;
+    const data = docSnap.data();
+
+    // Броня
+    const armorEl = document.getElementById(`${prefix}-armor`);
+    if (armorEl) armorEl.value = data.armor || '';
+
+    // Два оружия
+    for (let i = 1; i <= 2; i++) {
+      if (data.weapons && data.weapons[`weapon${i}`]) {
+        const weapon = data.weapons[`weapon${i}`];
+        const wName = document.getElementById(`${prefix}-weapon${i}-name`);
+        const wHit = document.getElementById(`${prefix}-weapon${i}-hit`);
+        const wDmg = document.getElementById(`${prefix}-weapon${i}-dmg`);
+		const wCrit = document.getElementById(`${prefix}-weapon${i}-crit`);
+        if (wName) wName.value = weapon.name || '';
+        if (wHit) wHit.value = weapon.hit || '';
+        if (wDmg) wDmg.value = weapon.dmg || '';
+		if (wCrit) wCrit.value = weapon.crit || '';
+      }
+    }
+
+    // 20 навыков/способностей
+    if (data.skills) {
+      for (let i = 1; i <= 20; i++) {
+        const skill = data.skills[`skill${i}`] || {};
+        const sName = document.getElementById(`${prefix}-skill${i}-name`);
+        const sFormula = document.getElementById(`${prefix}-skill${i}-formula`);
+        if (sName) sName.value = skill.name || '';
+        if (sFormula) sFormula.value = skill.formula || '';
+      }
+    }
+
+    console.log(`[EQUIP] Loaded equipment for ${characterId}.`);
+  } catch (err) {
+    console.error(`[ERROR] Failed to load equipment for ${characterId}:`, err);
+  }
+}
+
+// --- Сохранение экипировки и 20 навыков ---
+async function saveEquipment(characterId) {
+  const prefix = characterId;
+  const data = {
+    armor: '',
+    weapons: {},
+    skills: {}
+  };
+
+  // Броня
+  const armorEl = document.getElementById(`${prefix}-armor`);
+  if (armorEl) data.armor = armorEl.value;
+
+  // Два оружия
+  for (let i = 1; i <= 2; i++) {
+    const wName = document.getElementById(`${prefix}-weapon${i}-name`);
+    const wHit = document.getElementById(`${prefix}-weapon${i}-hit`);
+    const wDmg = document.getElementById(`${prefix}-weapon${i}-dmg`);
+	const wCrit = document.getElementById(`${prefix}-weapon${i}-crit`);
+    data.weapons[`weapon${i}`] = {
+      name: wName ? wName.value : '',
+      hit: wHit ? wHit.value : '',
+      dmg: wDmg ? wDmg.value : '',
+	  crit: wCrit ? wCrit.value : ''
+    };
+  }
+
+  // 20 навыков/способностей
+  for (let i = 1; i <= 20; i++) {
+    const sName = document.getElementById(`${prefix}-skill${i}-name`);
+    const sFormula = document.getElementById(`${prefix}-skill${i}-formula`);
+    data.skills[`skill${i}`] = {
+      name: sName ? sName.value : '',
+      formula: sFormula ? sFormula.value : ''
+    };
+  }
+
+  try {
+    await db.collection('characters').doc(prefix).set(data, { merge: true });
+    alert(`Экипировка и навыки ${prefix} сохранены!`);
+  } catch (err) {
+    console.error(err);
+    alert('Ошибка при сохранении');
+  }
+}
+
+// --- Переключение вкладок ---
+function activateTab(characterId) {
+  const other = characterId === 'lexa' ? 'axel' : 'lexa';
+  document.getElementById(`${characterId}-info`).style.display = 'flex';
+  document.getElementById(`${other}-info`).style.display = 'none';
+  loadEquipment(characterId);
+}
+
+// --- Инициализация после полной загрузки DOM ---
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('lexa').addEventListener('change', () => activateTab('lexa'));
+  document.getElementById('axel').addEventListener('change', () => activateTab('axel'));
+
+  const btnLexa = document.getElementById('save-equipment-btn-lexa');
+  if (btnLexa) btnLexa.addEventListener('click', () => saveEquipment('lexa'));
+
+  const btnAxel = document.getElementById('save-equipment-btn-axel');
+  if (btnAxel) btnAxel.addEventListener('click', () => saveEquipment('axel'));
+
+  // По умолчанию активируем Лексу
+  activateTab('lexa');
+});
+
+
+
+
+// === Обработчик кнопок dice ===
+document.addEventListener("click", (e) => {
+  // Проверяем, что клик был по кнопке с классом dice-btn
+  if (e.target.classList.contains("dice-btn")) {
+    const btn = e.target;
+    const prevInput = btn.previousElementSibling; // ближайший input перед кнопкой
+
+    if (!prevInput || prevInput.tagName !== "INPUT") {
+      console.warn("Перед кнопкой нет input с формулой!");
+      return;
+    }
+
+    const formula = prevInput.value.trim();
+    if (!formula) {
+      alert("Поле с формулой пустое!");
+      return;
+    }
+
+    // Копируем в буфер обмена (опционально)
+    navigator.clipboard.writeText(formula).catch(() => {
+      console.warn("Не удалось скопировать в буфер — но это не критично.");
+    });
+
+    // Вставляем в общий input
+    const formulaField = document.getElementById("formula");
+    if (formulaField) {
+      formulaField.value = formula;
+    }
+
+    // Нажимаем кнопку броска кубов
+    const rollButton = document.querySelector("button[onclick='rollFormula()']");
+    if (rollButton) {
+      rollButton.click();
+    } else {
+      console.error("Кнопка броска не найдена!");
+    }
+  }
+});
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const inputs = document.querySelectorAll('.skill-name');
+
+  inputs.forEach(input => {
+    input.addEventListener('mouseenter', () => {
+      const tooltip = document.createElement('div');
+      tooltip.className = 'input-tooltip';
+      tooltip.innerText = input.value;
+      document.body.appendChild(tooltip);
+
+      const rect = input.getBoundingClientRect();
+      tooltip.style.position = 'absolute';
+      tooltip.style.left = rect.left + window.scrollX + 'px';
+      tooltip.style.top = rect.bottom + window.scrollY + 'px';
+      tooltip.style.background = '#333';
+      tooltip.style.color = '#fff';
+      tooltip.style.padding = '4px 8px';
+      tooltip.style.borderRadius = '6px';
+      tooltip.style.width = '500px';        // фиксированная ширина
+      tooltip.style.whiteSpace = 'normal';  // перенос текста
+      tooltip.style.wordBreak = 'break-word'; // перенос длинных слов
+      tooltip.style.zIndex = 9999;
+
+      input._tooltip = tooltip; // сохраняем ссылку
+    });
+
+    input.addEventListener('mouseleave', () => {
+      if (input._tooltip) {
+        input._tooltip.remove();
+        input._tooltip = null;
+      }
+    });
+  });
+});
+
+
+

@@ -376,6 +376,57 @@
 			</div>
 		</div>
 	</div>
+	
+	<div class="equipment-section full-width" >
+		<!-- Экипировка -->
+		<label>Броня </label><input class="armor" type="text" id="lexa-armor" placeholder="Броня"><br><br>
+		
+		<!-- Оружие 1 -->
+		<label>Оружие </label>		<input class="weapon-name" 	type="text"	id="lexa-weapon1-name"	placeholder="Название">
+		<label>Попадание </label>	<input class="weapon-hit" 	type="text"	id="lexa-weapon1-hit"	placeholder="Попадание">
+		<button class="dice-btn">🎲</button>
+		<label>Урон </label>		<input class="weapon-dmg" 	type="text"	id="lexa-weapon1-dmg"	placeholder="Урон">
+		<button class="dice-btn">🎲</button>
+		<label>Крит </label>		<input class="weapon-crit" 	type="text"	id="lexa-weapon1-crit"	placeholder="Крит">
+		<button class="dice-btn">🎲</button><br>
+		
+		<!-- Оружие 2 -->
+		<label>Оружие </label>		<input class="weapon-name" 	type="text" id="lexa-weapon2-name"	placeholder="Название">
+		<label>Попадание </label>	<input class="weapon-hit" 	type="text"	id="lexa-weapon2-hit"	placeholder="Попадание">
+		<button class="dice-btn">🎲</button>
+		<label>Урон </label>		<input class="weapon-dmg"	type="text"	id="lexa-weapon2-dmg"	placeholder="Урон">
+		<button class="dice-btn">🎲</button>
+		<label>Крит </label>		<input class="weapon-crit" 	type="text"	id="lexa-weapon2-crit"	placeholder="Крит">
+		<button class="dice-btn">🎲</button><br><br>
+		
+		<!-- Навыки -->
+		<div id="lexa-ability-list">
+										<input class="skill-name" type="text" id="lexa-skill1-name" 	placeholder="Способность">
+			<label>Формула </label>		<input class="skill-form" type="text" id="lexa-skill1-formula" 	placeholder="формула">	<button class="dice-btn">🎲</button><br>
+										<input class="skill-name" type="text" id="lexa-skill2-name"		placeholder="Способность">
+			<label>Формула </label>		<input class="skill-form" type="text" id="lexa-skill2-formula" 	placeholder="формула">	<button class="dice-btn">🎲</button><br>
+										<input class="skill-name" type="text" id="lexa-skill3-name" 	placeholder="Способность">
+			<label>Формула </label>		<input class="skill-form" type="text" id="lexa-skill3-formula"	placeholder="формула">	<button class="dice-btn">🎲</button><br>
+										<input class="skill-name" type="text" id="lexa-skill4-name" 	placeholder="Способность">
+			<label>Формула </label>		<input class="skill-form" type="text" id="lexa-skill4-formula" 	placeholder="формула">	<button class="dice-btn">🎲</button><br>
+										<input class="skill-name" type="text" id="lexa-skill5-name" 	placeholder="Способность">
+			<label>Формула </label>		<input class="skill-form" type="text" id="lexa-skill5-formula" 	placeholder="формула">	<button class="dice-btn">🎲</button><br>
+										<input class="skill-name" type="text" id="lexa-skill6-name" 	placeholder="Способность">
+			<label>Формула </label>		<input class="skill-form" type="text" id="lexa-skill6-formula" 	placeholder="формула">	<button class="dice-btn">🎲</button><br>
+										<input class="skill-name" type="text" id="lexa-skill7-name" 	placeholder="Способность">
+			<label>Формула </label>		<input class="skill-form" type="text" id="lexa-skill7-formula" 	placeholder="формула">	<button class="dice-btn">🎲</button><br>
+										<input class="skill-name" type="text" id="lexa-skill8-name" 	placeholder="Способность">
+			<label>Формула </label>		<input class="skill-form" type="text" id="lexa-skill8-formula" 	placeholder="формула">	<button class="dice-btn">🎲</button><br>
+										<input class="skill-name" type="text" id="lexa-skill9-name" 	placeholder="Способность">
+			<label>Формула </label>		<input class="skill-form" type="text" id="lexa-skill9-formula" 	placeholder="формула">	<button class="dice-btn">🎲</button><br>
+										<input class="skill-name" type="text" id="lexa-skill10-name" 	placeholder="Способность">
+			<label>Формула </label>		<input class="skill-form" type="text" id="lexa-skill10-formula"	placeholder="формула">	<button class="dice-btn">🎲</button><br>
+										<input class="skill-name" type="text" id="lexa-skill11-name" 	placeholder="Способность">
+			<label>Формула </label>		<input class="skill-form" type="text" id="lexa-skill11-formula" placeholder="формула">	<button class="dice-btn">🎲</button><br><br>
+		</div>
+
+		<button class="save-equipment-btn" id="save-equipment-btn-lexa">💾 Сохранить изменения</button>
+	</div>
 
 </div>
 
@@ -638,20 +689,20 @@
 			  <div class="coins">
 					<label>
 						<span class="coin gold"></span>
-						<input type="number" id="lexa-gold" min="0" value="0">
+						<input type="number" id="axel-gold" min="0" value="0">
 					</label>
 					
 					<label>
 						<span class="coin silver"></span>
-						<input type="number" id="lexa-silver" min="0" value="0">
+						<input type="number" id="axel-silver" min="0" value="0">
 					</label>
 					
 					<label>
 						<span class="coin copper"></span>
-						<input type="number" id="lexa-copper" min="0" value="0">
+						<input type="number" id="axel-copper" min="0" value="0">
 					</label>
 				</div>
-			  <button class="save-inventory-btn" data-character="axel">💾 Сохранить инвентарь</button>
+			  <button  class="save-inventory-btn" data-character="axel">💾 Сохранить инвентарь</button>
 			</div>
 		</div>
 	
@@ -694,8 +745,56 @@
 			</div>
 		</div>
 	</div>
+	<div class="equipment-section full-width" >
+			<!-- Экипировка -->
+			<label>Броня </label><input class="armor" type="text" id="axel-armor" placeholder="Броня"><br><br>
+			
+			<!-- Оружие 1 -->
+			<label>Оружие </label>		<input class="weapon-name" 	type="text"	id="axel-weapon1-name"	placeholder="Название">
+			<label>Попадание </label>	<input class="weapon-hit" 	type="text"	id="axel-weapon1-hit"	placeholder="Попадание">
+			<button class="dice-btn">🎲</button>
+			<label>Урон </label>		<input class="weapon-dmg" 	type="text"	id="axel-weapon1-dmg"	placeholder="Урон">
+			<button class="dice-btn">🎲</button>
+			<label>Крит </label>		<input class="weapon-crit" 	type="text"	id="axel-weapon1-crit"	placeholder="Крит">
+			<button class="dice-btn">🎲</button><br>
+			
+			<!-- Оружие 2 -->
+			<label>Оружие </label>		<input class="weapon-name" 	type="text" id="axel-weapon2-name"	placeholder="Название">
+			<label>Попадание </label>	<input class="weapon-hit" 	type="text"	id="axel-weapon2-hit"	placeholder="Попадание">
+			<button class="dice-btn">🎲</button>
+			<label>Урон </label>		<input class="weapon-dmg"	type="text"id="axel-weapon2-dmg"	placeholder="Урон">
+			<button class="dice-btn">🎲</button>
+			<label>Крит </label>		<input class="weapon-crit" 	type="text"	id="axel-weapon2-crit"	placeholder="Крит">
+			<button class="dice-btn">🎲</button><br><br>
+			
+			<!-- Навыки -->
+			<div id="axel-ability-list">
+											<input class="skill-name" type="text" id="axel-skill1-name" 	placeholder="Способность">
+				<label>Формула </label>		<input class="skill-form" type="text" id="axel-skill1-formula" 	placeholder="формула">	<button class="dice-btn">🎲</button><br>
+											<input class="skill-name" type="text" id="axel-skill2-name"		placeholder="Способность">
+				<label>Формула </label>		<input class="skill-form" type="text" id="axel-skill2-formula" 	placeholder="формула">	<button class="dice-btn">🎲</button><br>
+											<input class="skill-name" type="text" id="axel-skill3-name" 	placeholder="Способность">
+				<label>Формула </label>		<input class="skill-form" type="text" id="axel-skill3-formula"	placeholder="формула">	<button class="dice-btn">🎲</button><br>
+											<input class="skill-name" type="text" id="axel-skill4-name" 	placeholder="Способность">
+				<label>Формула </label>		<input class="skill-form" type="text" id="axel-skill4-formula" 	placeholder="формула">	<button class="dice-btn">🎲</button><br>
+											<input class="skill-name" type="text" id="axel-skill5-name" 	placeholder="Способность">
+				<label>Формула </label>		<input class="skill-form" type="text" id="axel-skill5-formula" 	placeholder="формула">	<button class="dice-btn">🎲</button><br>
+											<input class="skill-name" type="text" id="axel-skill6-name" 	placeholder="Способность">
+				<label>Формула </label>		<input class="skill-form" type="text" id="axel-skill6-formula" 	placeholder="формула">	<button class="dice-btn">🎲</button><br>
+											<input class="skill-name" type="text" id="axel-skill7-name" 	placeholder="Способность">
+				<label>Формула </label>		<input class="skill-form" type="text" id="axel-skill7-formula" 	placeholder="формула">	<button class="dice-btn">🎲</button><br>
+											<input class="skill-name" type="text" id="axel-skill8-name" 	placeholder="Способность">
+				<label>Формула </label>		<input class="skill-form" type="text" id="axel-skill8-formula" 	placeholder="формула">	<button class="dice-btn">🎲</button><br>
+											<input class="skill-name" type="text" id="axel-skill9-name" 	placeholder="Способность">
+				<label>Формула </label>		<input class="skill-form" type="text" id="axel-skill9-formula" 	placeholder="формула">	<button class="dice-btn">🎲</button><br>
+											<input class="skill-name" type="text" id="axel-skill10-name" 	placeholder="Способность">
+				<label>Формула </label>		<input class="skill-form" type="text" id="axel-skill10-formula"	placeholder="формула">	<button class="dice-btn">🎲</button><br>
+											<input class="skill-name" type="text" id="axel-skill11-name" 	placeholder="Способность">
+				<label>Формула </label>		<input class="skill-form" type="text" id="axel-skill11-formula" placeholder="формула">	<button class="dice-btn">🎲</button><br><br>
+			</div>
 
-</div>
+			<button class="save-equipment-btn" id="save-equipment-btn-axel">💾 Сохранить изменения</button>
+		</div>
 
   <script src="characters.js"></script>
 </body>
